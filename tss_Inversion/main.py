@@ -18,7 +18,7 @@ class CanvasGrafico(FigureCanvas):
         self.ax.set_title("Distribución de la TIR")
         self.fig.tight_layout()
 
-# SECCIÓN 2: INTERFAZ DE USUARIO (UI)
+# INTERFAZ DE USUARIO (UI)
 
 class AppInversion(QMainWindow):
     def __init__(self):
@@ -82,7 +82,7 @@ class AppInversion(QMainWindow):
         self.grupo_sim = QGroupBox("3. Configuración")
         form_sim = QFormLayout()
         self.trema = self.crear_input(15, 0, 100)
-        self.iteraciones = self.crear_input(1000, 1, 10000) # Mínimo forzado a 1
+        self.iteraciones = self.crear_input(1000, 1, 10000) 
         form_sim.addRow("TREMA (%):", self.trema)
         form_sim.addRow("Nº Iteraciones:", self.iteraciones)
         self.grupo_sim.setLayout(form_sim)

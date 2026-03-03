@@ -7,9 +7,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QHBoxLayout
                              QGroupBox, QFormLayout, QMessageBox, QFrame)
 from PyQt6.QtCore import Qt
 
-# =========================================================
-# SECCIÓN 1: EL GRÁFICO (MANEJO DE MATPLOTLIB)
-# =========================================================
+#  EL GRÁFICO 
 class CanvasPi(FigureCanvas):
     """Clase para gestionar el área de dibujo"""
     def __init__(self, parent=None):
@@ -32,9 +30,8 @@ class CanvasPi(FigureCanvas):
         self.ax.set_facecolor('#FFFFFF')
         self.fig.tight_layout()
 
-# =========================================================
-# SECCIÓN 2: INTERFAZ DE USUARIO (GUI CON PYQT6)
-# =========================================================
+
+# INTERFAZ DE USUARIO
 class AppEstimacionPi(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -71,7 +68,7 @@ class AppEstimacionPi(QMainWindow):
         self.setCentralWidget(widget_central)
         layout_main = QHBoxLayout(widget_central)
 
-        # --- PANEL IZQUIERDO: CONTROLES Y CONFIGURACIÓN ---
+        # PANEL IZQUIERDO: CONTROLES Y CONFIGURACIÓN 
         panel_izq = QVBoxLayout()
         
         # Caja de entrada para el número de dardos (iteraciones)
@@ -114,16 +111,15 @@ class AppEstimacionPi(QMainWindow):
         box_res.setLayout(res_vbox)
         panel_izq.addWidget(box_res)
 
-        panel_izq.addStretch() # Espacio flexible para empujar todo hacia arriba
-        layout_main.addLayout(panel_izq, 1) # Proporción 1
+        panel_izq.addStretch() 
+        layout_main.addLayout(panel_izq, 1)
 
-        # --- PANEL DERECHO: ÁREA DE GRÁFICO ---
+        # PANEL DERECHO: ÁREA DE GRÁFICO 
         self.canvas = CanvasPi(self)
         layout_main.addWidget(self.canvas, 2) # Proporción 2 (más ancho)
 
-# =========================================================
-# SECCIÓN 3: LÓGICA DE SIMULACIÓN Y MANEJO DE ERRORES
-# =========================================================
+
+# LÓGICA DE SIMULACIÓN Y MANEJO DE ERRORES
     def mostrar_aviso_error(self):
         """Muestra una alerta estilizada y protegida contra minimización accidental"""
         alerta = QMessageBox(self)
@@ -133,7 +129,6 @@ class AppEstimacionPi(QMainWindow):
         alerta.setInformativeText("El número de dardos debe ser mayor a 0.")
         alerta.setStandardButtons(QMessageBox.StandardButton.Ok)
 
-        # Forzar banderas de ventana para que solo tenga el botón de cerrar (X)
         alerta.setWindowFlags(
             Qt.WindowType.Window | 
             Qt.WindowType.CustomizeWindowHint | 
@@ -162,9 +157,9 @@ class AppEstimacionPi(QMainWindow):
             return
 
         try:
-            # Desactivar botón durante el proceso
+           
             self.btn.setEnabled(False)
-            QApplication.processEvents() # Actualizar la interfaz
+            QApplication.processEvents() 
 
             # 1. Generar coordenadas aleatorias uniformes entre 0 y 1
             x = np.random.rand(n)
@@ -192,29 +187,26 @@ class AppEstimacionPi(QMainWindow):
             # 5. Actualizar el gráfico (limpiar y redibujar)
             self.canvas.reset_plot()
             
-            # Límite de seguridad visual: No dibujar más de 10,000 puntos para no congelar la PC
             limite = 10000
             if n > limite:
-                idx = np.random.choice(n, limite, replace=False) # Tomar muestra aleatoria
+                idx = np.random.choice(n, limite, replace=False)
                 self.canvas.ax.scatter(x[idx][dentro[idx]], y[idx][dentro[idx]], color='#3498DB', s=1, alpha=0.5)
                 self.canvas.ax.scatter(x[idx][~dentro[idx]], y[idx][~dentro[idx]], color='#FF7675', s=1, alpha=0.5)
             else:
                 self.canvas.ax.scatter(x[dentro], y[dentro], color='#3498DB', s=1, alpha=0.5)
                 self.canvas.ax.scatter(x[~dentro], y[~dentro], color='#FF7675', s=1, alpha=0.5)
             
-            self.canvas.draw() # Refrescar el lienzo de Matplotlib
+            self.canvas.draw()
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Fallo inesperado: {str(e)}")
         finally:
-            self.btn.setEnabled(True) # Reactivar botón al terminar
+            self.btn.setEnabled(True) 
 
-# =========================================================
-# LANZAMIENTO DE LA APLICACIÓN
-# =========================================================
+#App
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setStyle("Fusion") # Estilo moderno multiplataforma
+    app.setStyle("Fusion")
     
     win = AppEstimacionPi()
     win.show()
